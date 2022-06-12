@@ -1,0 +1,19 @@
+@import "~antd/dist/antd.css";
+
+.logo {
+  float: left;
+  height: 32px;
+  width: 32px;
+  margin: 16px 16px 16px 0px;
+  background-image: url("../../../public/ai.png");
+  background-size: contain;
+}
+
+.font {
+  float: left;
+  color: white;
+}
+
+.ui {
+  float: right;
+}

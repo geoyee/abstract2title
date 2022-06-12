@@ -1,0 +1,11 @@
+@import '~antd/dist/antd.css';
+
+.header {
+  width: 100%;
+  height: 64px;
+}
+
+.site-layout-background {
+  background: rgb(255, 255, 255);
+  height: calc(100vh - 64px);
+}
