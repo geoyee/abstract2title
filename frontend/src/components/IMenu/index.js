@@ -31,8 +31,8 @@ const IMenu = () => {
         className='ui'
         theme='dark'
         mode='horizontal'
-        defaultSelectedKeys={['M1']}
-        items={items} />
+        items={ items }
+        selectable={ false } />
     </div>
   );
 };
