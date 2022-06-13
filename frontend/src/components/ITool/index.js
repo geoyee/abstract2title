@@ -1,6 +1,6 @@
-import { 
+import {
     CodeSandboxOutlined,
-    DiffOutlined, 
+    DiffOutlined,
     CopyOutlined,
     DeleteOutlined,
     BoldOutlined,

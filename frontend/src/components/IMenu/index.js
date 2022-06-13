@@ -1,7 +1,7 @@
-import { 
-  HomeOutlined, 
-  SettingOutlined, 
-  QuestionCircleOutlined, 
+import {
+  HomeOutlined,
+  SettingOutlined,
+  QuestionCircleOutlined,
   GithubOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';
 import React from 'react';
@@ -27,11 +27,11 @@ const IMenu = () => {
     <div>
       <div className='logo' />
       <h1 className='font'>论文标题生成系统</h1>
-      <Menu 
-        className='ui' 
-        theme='dark' 
-        mode='horizontal' 
-        defaultSelectedKeys={['M1']} 
+      <Menu
+        className='ui'
+        theme='dark'
+        mode='horizontal'
+        defaultSelectedKeys={['M1']}
         items={items} />
     </div>
   );
