@@ -1,8 +1,8 @@
 import os.path as osp
 import uvicorn
 from fastapi import FastAPI
-from typing import Dict
 from core import InferWorker
+from typing import Dict
 
 
 PATH = osp.abspath(osp.dirname(osp.dirname(__file__)))

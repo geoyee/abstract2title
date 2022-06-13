@@ -1,13 +1,14 @@
 import numpy as np
+from paddlenlp.transformers import ErnieTokenizer
 from copy import deepcopy
 from typing import Dict, Tuple, Optional
 
 
 def convert_example(
     example: Dict,
-    tokenizer,
-    attn_id,
-    tgt_type_id,
+    tokenizer: ErnieTokenizer,
+    attn_id: int,
+    tgt_type_id: int,
     max_encode_len: int,
     max_decode_len: int,
 ) -> Tuple:

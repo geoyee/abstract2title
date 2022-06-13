@@ -1,4 +1,5 @@
 import paddle
+from paddle import Tensor
 from paddle.io import DistributedBatchSampler, DataLoader
 from paddlenlp.data import Tuple, Pad
 from paddlenlp.datasets import load_dataset
@@ -11,7 +12,7 @@ from .utils import convert_example, after_padding
 from typing import Dict
 
 
-def gen_bias(encoder_inputs, decoder_inputs, step):
+def gen_bias(encoder_inputs: Tensor, decoder_inputs: Tensor, step: int) -> Tensor:
     decoder_bsz, decoder_seqlen = decoder_inputs.shape[:2]
     encoder_bsz, encoder_seqlen = encoder_inputs.shape[:2]
     attn_bias = paddle.reshape(
@@ -45,24 +46,24 @@ def gen_bias(encoder_inputs, decoder_inputs, step):
 
 @paddle.no_grad()
 def greedy_search_infilling(
-    model,
-    q_ids,
-    q_sids,
-    sos_id,
-    eos_id,
-    attn_id,
-    pad_id,
-    unk_id,
-    vocab_size,
-    max_encode_len=300,
-    max_decode_len=120,
-    tgt_type_id=3,
-):
+    model: ErnieForGeneration,
+    q_ids: Tensor,
+    q_sids: Tensor,
+    sos_id: int,
+    eos_id: int,
+    attn_id: int,
+    pad_id: int,
+    unk_id: int,
+    vocab_size: int,
+    max_encode_len: int = 300,
+    max_decode_len: int = 120,
+    tgt_type_id: int = 3,
+) -> np.ndarray:
     _, logits, info = model(q_ids, q_sids)
     d_batch, d_seqlen = q_ids.shape
     seqlen = paddle.sum(paddle.cast(q_ids != 0, "int64"), 1, keepdim=True)
-    has_stopped = np.zeros([d_batch], dtype=np.bool)
-    gen_seq_len = np.zeros([d_batch], dtype=np.int64)
+    has_stopped = np.zeros([d_batch], dtype="bool")
+    gen_seq_len = np.zeros([d_batch], dtype="int64")
     output_ids = []
     past_cache = info["caches"]
     cls_ids = paddle.ones([d_batch], dtype="int64") * sos_id
@@ -71,7 +72,7 @@ def greedy_search_infilling(
     for step in range(max_decode_len):
         bias = gen_bias(q_ids, ids, step)
         pos_ids = paddle.to_tensor(
-            np.tile(np.array([[step, step + 1]], dtype=np.int64), [d_batch, 1])
+            np.tile(np.array([[step, step + 1]], dtype="int64"), [d_batch, 1])
         )
         pos_ids += seqlen
         _, logits, info = model(
@@ -102,13 +103,12 @@ def greedy_search_infilling(
         gen_ids = gen_ids[:, 1]
         ids = paddle.stack([gen_ids, attn_ids], 1)
         gen_ids = gen_ids.numpy()
-        has_stopped |= (gen_ids == eos_id).astype(np.bool)
-        gen_seq_len += 1 - has_stopped.astype(np.int64)
+        has_stopped |= (gen_ids == eos_id).astype("bool")
+        gen_seq_len += 1 - has_stopped.astype("int64")
         output_ids.append(gen_ids.tolist())
         if has_stopped.all():
             break
-    output_ids = np.array(output_ids).transpose([1, 0])
-    return output_ids
+    return np.array(output_ids).transpose([1, 0])
 
 
 class InferWorker:
