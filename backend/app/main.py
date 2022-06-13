@@ -1,33 +1,34 @@
+import os.path as osp
 import uvicorn
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI
 from typing import Dict
-from core import InferWorker, read_imagefile, image_to_base64
+from core import InferWorker
+
+
+PATH = osp.abspath(osp.dirname(osp.dirname(__file__)))
 
 
 app = FastAPI()
-infer_worker = InferWorker()
-segmentation = ""
+infer_worker = InferWorker(osp.join(PATH, "weight"))
+title = ""
 
 
 @app.get("/")
-async def ping() -> Dict[str, str]:
+async def ping() -> Dict:
     return {"ping": "pong!"}
 
 
 @app.post("/predict")
-async def predict(file: UploadFile = File(...)) -> None:
-    ext = file.filename.split(".")[-1]
-    if ext not in ["jpg", "jpeg"]:
-        raise ValueError("Image must be jpg/jpeg format!")
-    img = read_imagefile(await file.read())
-    pred = infer_worker.infer(img)
-    global segmentation 
-    segmentation = image_to_base64(pred)
+async def predict(data: Dict) -> None:
+    abstract = data["abstract"]
+    pred = infer_worker.create_title(abstract)
+    global title
+    title = pred["title"]
 
 
 @app.get("/result")
-async def output() -> Dict[str, str]:
-    return {"segmentation": segmentation}
+async def output() -> Dict:
+    return {"title": title}
 
 
 if __name__ == "__main__":
