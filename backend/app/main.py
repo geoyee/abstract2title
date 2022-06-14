@@ -11,7 +11,6 @@ PATH = osp.abspath(osp.dirname(osp.dirname(__file__)))
 
 app = FastAPI()
 infer_worker = InferWorker(osp.join(PATH, "weight"))
-title = ""
 
 
 origins = [
@@ -32,16 +31,11 @@ async def ping() -> Dict:
 
 
 @app.post("/predict")
-async def predict(data: Request) -> None:
+async def predict(data: Request) -> Dict:
     data = await data.json()
     abstract = data["abstract"]
     pred = infer_worker.create_title(abstract)
-    global title
     title = pred["title"]
-
-
-@app.get("/result")
-async def output() -> Dict:
     return {"title": title}
 
 
