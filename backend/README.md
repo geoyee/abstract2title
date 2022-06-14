@@ -14,7 +14,7 @@
    pip install -r requirements.txt
    ```
 
-3. 下载预训练的模型参数。该模型由10k+来自知网空间的“测绘、遥感、GIS”论文训练，下载地址为[百度网盘]()。下载后将该压缩包解压至`backend/weight`中即可。
+3. 下载预训练的模型参数。该模型由10k+来自知网空间的“测绘、遥感、GIS”论文训练，下载地址为[百度网盘](https://pan.baidu.com/s/1AYo0ItU8Fbtv2M0n-CtPAQ)（提取码：band）。下载后将该压缩包解压至`backend/weight`中即可。
 
 4. 启动后端：
    
